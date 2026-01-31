@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, Request
 from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.orm import Session
@@ -11,10 +12,10 @@ from routes.auth import get_current_household
 router = APIRouter(tags=["sse"])
 
 # Store active connections per household
-connections: dict[int, list[asyncio.Queue]] = {}
+connections: Dict[int, List[asyncio.Queue]] = {}
 
 
-async def notify_change(household_id: int, event_type: str, data: dict | None = None):
+async def notify_change(household_id: int, event_type: str, data: Optional[dict] = None):
     """Notify all connected clients of a household about a change."""
     if household_id not in connections:
         return
