@@ -1,3 +1,4 @@
+from typing import Optional, List
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -9,7 +10,7 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     success: bool
-    household_name: str | None = None
+    household_name: Optional[str] = None
 
 
 # Product
@@ -22,7 +23,7 @@ class ProductCreate(ProductBase):
 
 
 class ProductUpdate(BaseModel):
-    name: str | None = None
+    name: Optional[str] = None
 
 
 class ProductResponse(ProductBase):
@@ -35,18 +36,18 @@ class ProductResponse(ProductBase):
 
 
 class ProductReorderRequest(BaseModel):
-    product_ids: list[int]
+    product_ids: List[int]
 
 
 # Shopping Item
 class ShoppingItemBase(BaseModel):
-    quantity: str | None = None
-    note: str | None = None
+    quantity: Optional[str] = None
+    note: Optional[str] = None
 
 
 class ShoppingItemCreate(ShoppingItemBase):
-    product_id: int | None = None
-    custom_name: str | None = None
+    product_id: Optional[int] = None
+    custom_name: Optional[str] = None
 
 
 class ShoppingItemUpdate(ShoppingItemBase):
@@ -55,13 +56,13 @@ class ShoppingItemUpdate(ShoppingItemBase):
 
 class ShoppingItemResponse(ShoppingItemBase):
     id: int
-    product_id: int | None
-    custom_name: str | None
+    product_id: Optional[int]
+    custom_name: Optional[str]
     is_checked: bool
-    sort_order: int | None
+    sort_order: Optional[int]
     created_at: datetime
-    product_name: str | None = None
-    product_sort_order: int | None = None
+    product_name: Optional[str] = None
+    product_sort_order: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -76,9 +77,9 @@ class ShoppingClearRequest(BaseModel):
 
 
 class CustomItemReorderRequest(BaseModel):
-    item_ids: list[int]
+    item_ids: List[int]
 
 
 class AddCustomToProductsRequest(BaseModel):
     item_id: int
-    sort_order: int | None = None
+    sort_order: Optional[int] = None

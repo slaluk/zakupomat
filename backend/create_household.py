@@ -128,7 +128,7 @@ def hash_key(key: str) -> str:
     return hashlib.sha256(key.encode()).hexdigest()
 
 
-def create_household(name: str | None = None, key: str | None = None) -> tuple[int, str]:
+def create_household(name=None, key=None):
     """Create a new household and return its ID and access key."""
     if key is None:
         key = generate_key()
