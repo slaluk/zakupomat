@@ -6,16 +6,40 @@ import {
   deleteShoppingItem,
 } from '../api/client';
 
+function HighlightMatch({ text, query }) {
+  if (!query || !text) return <>{text}</>;
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase();
+  const idx = lowerText.indexOf(lowerQuery);
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="search-highlight">{text.slice(idx, idx + query.length)}</mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
+
 export function ShoppingList({ products, shoppingItems, onRefresh }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [customName, setCustomName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [note, setNote] = useState('');
   const [editingItem, setEditingItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const sortedItems = [...shoppingItems].sort((a, b) => {
     return (a.product_name || '').localeCompare(b.product_name || '', 'pl');
   });
+
+  const displayedItems = searchQuery.trim()
+    ? sortedItems.filter(item =>
+        (item.product_name || '').toLowerCase().includes(searchQuery.trim().toLowerCase())
+      )
+    : sortedItems;
+
+  const isFiltered = searchQuery.trim() && sortedItems.length !== displayedItems.length;
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
@@ -92,6 +116,7 @@ export function ShoppingList({ products, shoppingItems, onRefresh }) {
         shoppingItems={shoppingItems}
         onSelect={handleSelectProduct}
         onAddCustom={handleAddCustom}
+        onSearchChange={setSearchQuery}
       />
 
       {(selectedProduct || customName) && (
@@ -137,6 +162,12 @@ export function ShoppingList({ products, shoppingItems, onRefresh }) {
         </div>
       )}
 
+      {isFiltered && (
+        <div className="filter-indicator">
+          Pokazano {displayedItems.length} z {sortedItems.length} produktow
+        </div>
+      )}
+
       {sortedItems.length === 0 ? (
         <div className="empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -145,12 +176,16 @@ export function ShoppingList({ products, shoppingItems, onRefresh }) {
           <p>Lista zakupow jest pusta</p>
           <p style={{ fontSize: 14, marginTop: 8 }}>Wyszukaj produkty powyzej</p>
         </div>
+      ) : displayedItems.length === 0 ? (
+        <div className="empty-state">
+          <p>Brak produktow pasujacych do „{searchQuery.trim()}"</p>
+        </div>
       ) : (
-        sortedItems.map(item => (
+        displayedItems.map(item => (
           <div key={item.id} className="shopping-item">
             <div className="item-content">
               <div className="item-name">
-                {item.product_name}
+                <HighlightMatch text={item.product_name} query={searchQuery.trim()} />
               </div>
               {editingItem?.id === item.id ? (
                 <div className="add-form-row" style={{ marginTop: 8 }}>

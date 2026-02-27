@@ -60,11 +60,11 @@ zakupomat/
     │   └── client.js        # Fetch wrapper z X-Access-Key; wszystkie wywołania API
     ├── components/
     │   ├── Login.jsx
-    │   ├── ShoppingList.jsx     # / — dodawanie do listy zakupów
+    │   ├── ShoppingList.jsx     # / — dodawanie do listy zakupów + filtrowanie listy przez wyszukiwarkę
     │   ├── BulkAdd.jsx          # /bulk — masowe zaznaczanie produktów
     │   ├── ShoppingMode.jsx     # /shopping — tryb zakupowy z checkboxami
     │   ├── ProductManager.jsx   # /products — zarządzanie bazą produktów (drag-drop)
-    │   ├── ProductSearch.jsx    # wyszukiwarka produktów / custom item
+    │   ├── ProductSearch.jsx    # wyszukiwarka produktów / custom item + callback filtrowania listy
     │   └── BottomNav.jsx        # dolna nawigacja
     └── hooks/
         └── useSSE.js        # Custom hook SSE przez fetch() (obsługa X-Access-Key)
@@ -206,6 +206,29 @@ onRefresh();  // odświeża dane z API przez App.jsx
 2. Dodaj `<Route path="/sciezka" element={<NazwaWidoku ... />} />` w `App.jsx`
 3. Przekaż potrzebne props: `products`, `shoppingItems`, `onRefresh`
 4. Dodaj pozycję do `BottomNav.jsx`
+
+---
+
+## Filtrowanie listy zakupów przez wyszukiwarkę
+
+Wyszukiwarka produktów (`ProductSearch`) pełni podwójną rolę:
+1. **Podpowiedzi produktów** — dropdown z produktami z bazy pasującymi do zapytania (bez tych już na liście)
+2. **Filtrowanie listy zakupów** — jednoczesne filtrowanie wyświetlanej listy zakupów poniżej
+
+### Mechanizm
+- `ProductSearch` przyjmuje prop `onSearchChange` — callback wywoływany przy każdej zmianie tekstu w polu
+- `ShoppingList` trzyma stan `searchQuery` i filtruje `sortedItems` wzorcem `%query%` (case-insensitive)
+- Dopasowane nazwy produktów są podświetlane komponentem `HighlightMatch` (tag `<mark>`)
+- Wskaźnik "Pokazano X z Y produktów" wyświetla się gdy filtr jest aktywny
+
+### Reset filtra
+- Automatycznie: po wybraniu produktu z dropdown, po dodaniu custom produktu (query się czyści)
+- Ręcznie: przycisk "×" w polu wyszukiwania (`search-clear-btn`)
+
+### Klasy CSS
+- `.search-clear-btn` — przycisk czyszczenia w polu wyszukiwania
+- `.filter-indicator` — pasek informujący o aktywnym filtrze
+- `.search-highlight` — podświetlenie dopasowanego tekstu (`<mark>`)
 
 ---
 
