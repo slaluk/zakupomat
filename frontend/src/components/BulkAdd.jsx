@@ -59,6 +59,10 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
     }
   };
 
+  const sortedProducts = [...products].sort((a, b) => {
+    return a.name.localeCompare(b.name, 'pl');
+  });
+
   const checkedCount = products.filter(p => shoppingMap[p.id]).length;
 
   return (
@@ -82,7 +86,7 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
           <p style={{ fontSize: 14, marginTop: 8 }}>Dodaj produkty w zakladce "Produkty"</p>
         </div>
       ) : (
-        products.map(product => {
+        sortedProducts.map(product => {
           const existingItem = shoppingMap[product.id];
           const isChecked = !!existingItem;
           const isLoading = loading[product.id];

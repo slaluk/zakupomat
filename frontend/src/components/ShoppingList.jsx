@@ -14,7 +14,7 @@ export function ShoppingList({ products, shoppingItems, onRefresh }) {
   const [editingItem, setEditingItem] = useState(null);
 
   const sortedItems = [...shoppingItems].sort((a, b) => {
-    return (a.product_sort_order ?? 999999) - (b.product_sort_order ?? 999999);
+    return (a.product_name || '').localeCompare(b.product_name || '', 'pl');
   });
 
   const handleSelectProduct = (product) => {
