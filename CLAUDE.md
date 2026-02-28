@@ -118,15 +118,16 @@ SSE działa globalnie w `App.jsx:40-44`. Przy `products_updated` lub `shopping_u
 | Model | Tabela | Kluczowe pola |
 |-------|--------|---------------|
 | `Household` | `households` | `id`, `access_key_hash` (SHA256), `name` |
-| `Product` | `products` | `id`, `household_id` (FK), `name`, `sort_order` |
+| `Product` | `products` | `id`, `household_id` (FK), `name`, `sort_order`, `is_new` |
 | `ShoppingItem` | `shopping_items` | `id`, `household_id` (FK), `product_id` (FK, nullable), `custom_name`, `quantity`, `note`, `is_checked`, `sort_order` |
 
 - `Product.sort_order` — odzwierciedla układ produktów w sklepie; użytkownik sortuje drag-dropem
+- `Product.is_new` — flaga oznaczająca nowo dodane produkty; kasowana dopiero gdy użytkownik przeciągnie produkt na właściwą pozycję w zakładce Produkty (endpoint `PUT /products/reorder` z `moved_product_id`)
 - `ShoppingItem.product_id` jest nullable — ale w praktyce zawsze ustawiony (custom_name jest auto-tworzony jako produkt przy dodawaniu do listy)
 
 ### Brak systemu migracji
 
-Tabele tworzone przez `Base.metadata.create_all()` w `main.py:8` przy starcie. Nowe kolumny wymagają ręcznego `ALTER TABLE` w MySQL, a następnie restartu backendu.
+Tabele tworzone przez `Base.metadata.create_all()` w `main.py:8` przy starcie. Nowe kolumny wymagają ręcznego `ALTER TABLE` w MySQL, a następnie restartu backendu. Skrypty migracji umieszczaj w `deploy/migrate_*.sh`.
 
 ### Multi-tenancy
 
@@ -232,6 +233,23 @@ Wyszukiwarka produktów (`ProductSearch`) pełni podwójną rolę:
 
 ---
 
+## Badge nowych produktów
+
+Nowo dodane produkty mają `is_new = true`. Badge "NOWY" wyświetla się obok nazwy produktu w zakładce Produkty (`ProductManager`). Na dolnej nawigacji (`BottomNav`) zakładka Produkty (ikona zębatki) pokazuje czerwony badge z liczbą nowych produktów do uporządkowania.
+
+### Mechanizm
+- `Product.is_new` ustawiany na `true` przy tworzeniu (ORM default) — zarówno z `POST /products`, jak i auto-tworzenie z `POST /shopping` (custom_name)
+- Kasowany na `false` dopiero w `PUT /products/reorder` dla konkretnego produktu przekazanego jako `moved_product_id`
+- `BottomNav` przyjmuje prop `products` z `App.jsx` i liczy `products.filter(p => p.is_new).length`
+- SSE `products_updated` automatycznie odświeża stan badge'a na wszystkich klientach
+
+### Klasy CSS
+- `.new-badge` — badge "NOWY" obok nazwy produktu w ProductManager
+- `.nav-icon-wrapper` — wrapper relative do pozycjonowania badge'a na ikonie nawigacji
+- `.nav-badge` — czerwony badge z liczbą nad ikoną w BottomNav
+
+---
+
 ## Konwencje kodu
 
 ### Backend (Python)
@@ -259,6 +277,8 @@ Domyślna (hardcoded w `backend/config.py`):
 DATABASE_URL=mysql+pymysql://zakupomat:123frytki@localhost/zakupomat
 ```
 
+Produkcja: nazwa bazy i użytkownika MySQL to **`zakupomat2`**.
+
 Produkcja: skopiuj `backend/.env.example` → `backend/.env` i ustaw właściwe dane.
 
 ---
@@ -279,7 +299,7 @@ cd /var/www/zakupomat/frontend && npm run build
 cd /var/www/zakupomat && ./deploy/deploy.sh
 
 # Backup bazy danych
-mysqldump -u zakupomat -p zakupomat > backup_$(date +%Y%m%d).sql
+mysqldump -u zakupomat2 -p zakupomat2 > backup_$(date +%Y%m%d).sql
 ```
 
 ---

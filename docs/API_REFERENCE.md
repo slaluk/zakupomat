@@ -42,10 +42,12 @@ Zwraca wszystkie produkty rodziny, posortowane rosnąco po `sort_order`.
 **Response:**
 ```json
 [
-  { "id": 1, "name": "Mleko", "sort_order": 1, "created_at": "2024-01-01T10:00:00" },
-  { "id": 2, "name": "Chleb", "sort_order": 2, "created_at": "2024-01-01T10:00:00" }
+  { "id": 1, "name": "Mleko", "sort_order": 1, "is_new": false, "created_at": "2024-01-01T10:00:00" },
+  { "id": 2, "name": "Chleb", "sort_order": 2, "is_new": true, "created_at": "2024-01-01T10:00:00" }
 ]
 ```
+
+- `is_new` — `true` dla nowo dodanych produktów, które nie zostały jeszcze uporządkowane (przeciągnięte) w zakładce Produkty
 
 ---
 
@@ -58,7 +60,7 @@ Tworzy nowy produkt. Automatycznie dodawany na końcu listy (`sort_order = max +
 { "name": "Masło" }
 ```
 
-**Response:** nowy produkt (jak w GET)
+**Response:** nowy produkt (jak w GET, z `is_new: true`)
 
 **Błędy:**
 - `400` — produkt o tej nazwie już istnieje
@@ -73,10 +75,11 @@ Zmienia kolejność wyświetlania produktów.
 
 **Request body:**
 ```json
-{ "product_ids": [3, 1, 5, 2, 4] }
+{ "product_ids": [3, 1, 5, 2, 4], "moved_product_id": 5 }
 ```
 
-Kolejność ID w tablicy = nowa kolejność `sort_order`. Tablica musi zawierać wszystkie ID produktów rodziny.
+- `product_ids` — kolejność ID w tablicy = nowa kolejność `sort_order`. Tablica musi zawierać wszystkie ID produktów rodziny.
+- `moved_product_id` (opcjonalne) — ID produktu, który został przeciągnięty. Jeśli podany, kasuje flagę `is_new` tego produktu.
 
 **Response:** pełna lista produktów po zmianie kolejności
 

@@ -7,8 +7,8 @@
 
 set -e
 
-DB_NAME="zakupomat"
-DB_USER="zakupomat"
+DB_NAME="zakupomat2"
+DB_USER="zakupomat2"
 
 echo "=== Migracja: products.is_new ==="
 echo ""
