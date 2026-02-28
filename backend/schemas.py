@@ -29,6 +29,7 @@ class ProductUpdate(BaseModel):
 class ProductResponse(ProductBase):
     id: int
     sort_order: int
+    is_new: bool
     created_at: datetime
 
     class Config:
@@ -37,6 +38,7 @@ class ProductResponse(ProductBase):
 
 class ProductReorderRequest(BaseModel):
     product_ids: List[int]
+    moved_product_id: Optional[int] = None
 
 
 # Shopping Item

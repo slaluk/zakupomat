@@ -151,7 +151,7 @@ function AppContent() {
           />
         </Routes>
       </div>
-      <BottomNav />
+      <BottomNav products={products} />
     </div>
   );
 }

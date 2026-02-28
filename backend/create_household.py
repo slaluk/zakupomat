@@ -156,7 +156,8 @@ def create_household(name=None, key=None):
             product = Product(
                 household_id=household.id,
                 name=product_name,
-                sort_order=idx
+                sort_order=idx,
+                is_new=False
             )
             db.add(product)
 
