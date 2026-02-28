@@ -114,17 +114,11 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
               <input
                 type="text"
                 placeholder="Ilosc"
+                className="bulk-quantity-input"
                 value={currentQuantity}
                 onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                 onBlur={() => handleQuantityBlur(product)}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                  width: 80,
-                  padding: '6px 8px',
-                  border: '1px solid var(--gray-300)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 14,
-                }}
               />
             </div>
           );
