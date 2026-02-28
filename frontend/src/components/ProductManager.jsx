@@ -244,9 +244,9 @@ export function ProductManager({ products, shoppingItems, onRefresh }) {
             <h2>Edytuj produkt</h2>
             <input
               type="text"
+              className="modal-input"
               value={editingProduct.name}
               onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-              style={{ width: '100%', padding: 12, fontSize: 16, border: '1px solid var(--gray-300)', borderRadius: 'var(--radius)' }}
               autoFocus
             />
             <div className="modal-actions">

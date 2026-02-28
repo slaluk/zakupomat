@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'Zakupomat',
         short_name: 'Zakupomat',
         description: 'Lista zakupów dla rodziny',
-        theme_color: '#2563eb',
-        background_color: '#ffffff',
+        theme_color: '#F5952D',
+        background_color: '#FAF8F5',
         display: 'standalone',
         icons: [
           {
