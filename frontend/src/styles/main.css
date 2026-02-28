@@ -204,17 +204,13 @@ body {
 }
 
 .search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
   background: white;
   border: 1px solid var(--gray-300);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  max-height: 300px;
+  max-height: 200px;
   overflow-y: auto;
-  z-index: 50;
+  margin-top: 4px;
 }
 
 .search-result-item {
