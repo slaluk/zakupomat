@@ -24,6 +24,7 @@ class Product(Base):
     household_id = Column(Integer, ForeignKey("households.id"), nullable=False)
     name = Column(String(200), nullable=False)
     sort_order = Column(Integer, nullable=False)
+    is_new = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     household = relationship("Household", back_populates="products")

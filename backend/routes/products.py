@@ -69,6 +69,9 @@ async def reorder_products(
         if product_id in product_map:
             product_map[product_id].sort_order = index + 1
 
+    if request.moved_product_id and request.moved_product_id in product_map:
+        product_map[request.moved_product_id].is_new = False
+
     db.commit()
 
     updated = db.query(Product).filter(
