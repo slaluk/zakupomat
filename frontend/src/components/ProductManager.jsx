@@ -48,7 +48,10 @@ function SortableProduct({ product, onEdit, onDelete, shoppingItems }) {
           <path d="M8 6a2 2 0 11-4 0 2 2 0 014 0zm0 6a2 2 0 11-4 0 2 2 0 014 0zm0 6a2 2 0 11-4 0 2 2 0 014 0zm8-12a2 2 0 11-4 0 2 2 0 014 0zm0 6a2 2 0 11-4 0 2 2 0 014 0zm0 6a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       </div>
-      <span className="product-name">{product.name}</span>
+      <span className="product-name">
+        {product.name}
+        {product.is_new && <span className="new-badge">NOWY</span>}
+      </span>
       <span className="product-order">#{product.sort_order}</span>
       <button className="btn-icon" onClick={() => onEdit(product)} title="Edytuj">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -104,7 +107,7 @@ export function ProductManager({ products, shoppingItems, onRefresh }) {
       setItems(newItems);
 
       try {
-        await reorderProducts(newItems.map(p => p.id));
+        await reorderProducts(newItems.map(p => p.id), active.id);
         onRefresh();
       } catch (err) {
         alert('Blad: ' + err.message);
@@ -241,9 +244,9 @@ export function ProductManager({ products, shoppingItems, onRefresh }) {
             <h2>Edytuj produkt</h2>
             <input
               type="text"
+              className="modal-input"
               value={editingProduct.name}
               onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-              style={{ width: '100%', padding: 12, fontSize: 16, border: '1px solid var(--gray-300)', borderRadius: 'var(--radius)' }}
               autoFocus
             />
             <div className="modal-actions">

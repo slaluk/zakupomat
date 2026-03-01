@@ -59,6 +59,10 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
     }
   };
 
+  const sortedProducts = [...products].sort((a, b) => {
+    return a.name.localeCompare(b.name, 'pl');
+  });
+
   const checkedCount = products.filter(p => shoppingMap[p.id]).length;
 
   return (
@@ -82,7 +86,7 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
           <p style={{ fontSize: 14, marginTop: 8 }}>Dodaj produkty w zakladce "Produkty"</p>
         </div>
       ) : (
-        products.map(product => {
+        sortedProducts.map(product => {
           const existingItem = shoppingMap[product.id];
           const isChecked = !!existingItem;
           const isLoading = loading[product.id];
@@ -110,17 +114,11 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
               <input
                 type="text"
                 placeholder="Ilosc"
+                className="bulk-quantity-input"
                 value={currentQuantity}
                 onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                 onBlur={() => handleQuantityBlur(product)}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                  width: 80,
-                  padding: '6px 8px',
-                  border: '1px solid var(--gray-300)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 14,
-                }}
               />
             </div>
           );

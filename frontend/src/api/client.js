@@ -105,10 +105,14 @@ export async function deleteProduct(id) {
   });
 }
 
-export async function reorderProducts(productIds) {
+export async function reorderProducts(productIds, movedProductId = null) {
+  const body = { product_ids: productIds };
+  if (movedProductId !== null) {
+    body.moved_product_id = movedProductId;
+  }
   return request('/products/reorder', {
     method: 'PUT',
-    body: JSON.stringify({ product_ids: productIds }),
+    body: JSON.stringify(body),
   });
 }
 

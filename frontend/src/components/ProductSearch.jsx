@@ -1,9 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 
-export function ProductSearch({ products, shoppingItems, onSelect, onAddCustom }) {
+export function ProductSearch({ products, shoppingItems, onSelect, onAddCustom, onSearchChange }) {
   const [query, setQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
   const containerRef = useRef(null);
+
+  const updateQuery = (value) => {
+    setQuery(value);
+    if (onSearchChange) onSearchChange(value);
+  };
 
   const existingProductIds = new Set(
     shoppingItems
@@ -34,16 +39,21 @@ export function ProductSearch({ products, shoppingItems, onSelect, onAddCustom }
 
   const handleSelect = (product) => {
     onSelect(product);
-    setQuery('');
+    updateQuery('');
     setShowResults(false);
   };
 
   const handleAddCustom = () => {
     if (query.trim()) {
       onAddCustom(query.trim());
-      setQuery('');
+      updateQuery('');
       setShowResults(false);
     }
+  };
+
+  const handleClear = () => {
+    updateQuery('');
+    setShowResults(false);
   };
 
   return (
@@ -54,11 +64,24 @@ export function ProductSearch({ products, shoppingItems, onSelect, onAddCustom }
         placeholder="Wyszukaj produkt..."
         value={query}
         onChange={(e) => {
-          setQuery(e.target.value);
+          updateQuery(e.target.value);
           setShowResults(true);
         }}
         onFocus={() => setShowResults(true)}
       />
+      {query && (
+        <button
+          className="search-clear-btn"
+          onClick={handleClear}
+          type="button"
+          aria-label="Wyczysc wyszukiwanie"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      )}
 
       {showResults && query.trim() && (
         <div className="search-results">
