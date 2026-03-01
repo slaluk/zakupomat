@@ -695,31 +695,37 @@ body {
 /* Share Link */
 .share-link-container {
   display: flex;
-  gap: 0;
   margin-bottom: 8px;
 }
 
-.share-link-input {
-  flex: 1;
+.share-link-container input.share-link-input {
+  flex: 1 1 0%;
+  width: 0;
   padding: 10px 12px;
   border: 1px solid var(--gray-300);
   border-right: none;
-  border-radius: var(--radius) 0 0 var(--radius);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   font-size: 13px;
   background: var(--gray-100);
   color: var(--gray-700);
   min-width: 0;
+  margin-bottom: 0;
 }
 
-.share-link-input:focus {
+.share-link-container input.share-link-input:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: none;
+  background: var(--gray-100);
 }
 
-.share-link-copy {
-  border-radius: 0 var(--radius) var(--radius) 0 !important;
+.share-link-container .share-link-copy {
+  width: auto;
+  flex-shrink: 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   white-space: nowrap;
-  
+}
+
 /* Bulk quantity input */
 .bulk-quantity-input {
   width: 80px;

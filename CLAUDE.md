@@ -46,11 +46,12 @@ zakupomat/
 │   ├── database.py          # SQLAlchemy engine, SessionLocal, Base
 │   ├── models.py            # ORM: Household, Product, ShoppingItem
 │   ├── schemas.py           # Pydantic schemas (walidacja request/response)
-│   ├── create_household.py  # CLI do zakładania rodzin
+│   ├── create_household.py  # CLI do zakładania rodzin (alternatywa do /register)
+│   ├── default_products.py  # Lista domyślnych produktów (wspólna dla CLI i API)
 │   ├── requirements.txt
 │   ├── .env.example
 │   └── routes/
-│       ├── auth.py          # POST /auth/login + get_current_household()
+│       ├── auth.py          # POST /auth/login, POST /auth/register + get_current_household()
 │       ├── products.py      # CRUD produktów + reorder
 │       ├── shopping.py      # CRUD listy zakupów
 │       └── sse.py           # SSE endpoint + notify_change()
@@ -59,7 +60,8 @@ zakupomat/
     ├── api/
     │   └── client.js        # Fetch wrapper z X-Access-Key; wszystkie wywołania API
     ├── components/
-    │   ├── Login.jsx
+    │   ├── Login.jsx              # logowanie kluczem dostępu
+    │   ├── Register.jsx           # /register — tworzenie nowej rodziny + link do udostępnienia
     │   ├── ShoppingList.jsx     # / — dodawanie do listy zakupów + filtrowanie listy przez wyszukiwarkę
     │   ├── BulkAdd.jsx          # /bulk — masowe zaznaczanie produktów
     │   ├── ShoppingMode.jsx     # /shopping — tryb zakupowy z checkboxami
@@ -83,10 +85,17 @@ Każda rodzina ma losowy klucz dostępu. Na serwerze trzymany jest tylko SHA256 
 4. Każdy chroniony endpoint deklaruje: `household: Household = Depends(get_current_household)`
 5. Przy odpowiedzi 401: `client.js` automatycznie czyści localStorage i przeładowuje stronę
 
+**Rejestracja nowej rodziny:**
+- `POST /api/auth/register` — tworzy household + domyślne produkty, zwraca `access_key` w plaintext
+- Frontend: `/register` → formularz z nazwą rodziny → wyświetla link do skopiowania/udostępnienia
+- `Register.jsx` buduje link z `window.location.origin` (nie hardcoded domena)
+- Przycisk "Udostępnij" używa Web Share API (widoczny na mobile)
+
 **Kluczowe miejsca:**
-- `backend/routes/auth.py:16` — dependency `get_current_household()`
-- `frontend/src/api/client.js:19-51` — fetch wrapper z nagłówkiem
-- `frontend/src/App.jsx:18` — `hasAccessKey()` steruje widokiem Login vs app
+- `backend/routes/auth.py` — dependency `get_current_household()`, endpointy login i register
+- `backend/default_products.py` — lista domyślnych produktów (wspólna dla CLI i API)
+- `frontend/src/api/client.js` — fetch wrapper z nagłówkiem + `register()`
+- `frontend/src/App.jsx` — `hasAccessKey()` steruje widokiem; `/register` dostępny bez logowania
 
 ---
 
@@ -118,7 +127,7 @@ SSE działa globalnie w `App.jsx:40-44`. Przy `products_updated` lub `shopping_u
 | Model | Tabela | Kluczowe pola |
 |-------|--------|---------------|
 | `Household` | `households` | `id`, `access_key_hash` (SHA256), `name` |
-| `Product` | `products` | `id`, `household_id` (FK), `name`, `sort_order` |
+| `Product` | `products` | `id`, `household_id` (FK), `name`, `sort_order`, `is_new` (bool, default true) |
 | `ShoppingItem` | `shopping_items` | `id`, `household_id` (FK), `product_id` (FK, nullable), `custom_name`, `quantity`, `note`, `is_checked`, `sort_order` |
 
 - `Product.sort_order` — odzwierciedla układ produktów w sklepie; użytkownik sortuje drag-dropem
