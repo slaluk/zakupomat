@@ -13,6 +13,15 @@ class LoginResponse(BaseModel):
     household_name: Optional[str] = None
 
 
+class RegisterRequest(BaseModel):
+    name: str
+
+
+class RegisterResponse(BaseModel):
+    access_key: str
+    household_name: str
+
+
 # Product
 class ProductBase(BaseModel):
     name: str

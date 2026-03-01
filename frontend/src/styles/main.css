@@ -692,6 +692,34 @@ body {
   flex: 1;
 }
 
+/* Share Link */
+.share-link-container {
+  display: flex;
+  gap: 0;
+  margin-bottom: 8px;
+}
+
+.share-link-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-300);
+  border-right: none;
+  border-radius: var(--radius) 0 0 var(--radius);
+  font-size: 13px;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  min-width: 0;
+}
+
+.share-link-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.share-link-copy {
+  border-radius: 0 var(--radius) var(--radius) 0 !important;
+  white-space: nowrap;
+  
 /* Bulk quantity input */
 .bulk-quantity-input {
   width: 80px;

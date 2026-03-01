@@ -65,6 +65,21 @@ export async function login(accessKey) {
   return result;
 }
 
+export async function register(name) {
+  const response = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+    throw new Error(error.detail || 'Request failed');
+  }
+
+  return response.json();
+}
+
 // Products
 export async function getProducts() {
   return request('/products');
