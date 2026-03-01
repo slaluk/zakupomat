@@ -118,7 +118,17 @@ export function BulkAdd({ products, shoppingItems, onRefresh }) {
                 value={currentQuantity}
                 onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                 onBlur={() => handleQuantityBlur(product)}
-                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.target.blur();
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isChecked && !isLoading) {
+                    handleToggle(product);
+                  }
+                }}
               />
             </div>
           );
