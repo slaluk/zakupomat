@@ -44,6 +44,11 @@ export function Login({ onLogin }) {
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? 'Logowanie...' : 'Zaloguj'}
         </button>
+        <p style={{ textAlign: 'center', marginTop: 16, fontSize: 14 }}>
+          <a href="/register" style={{ color: 'var(--primary)' }}>
+            Utworz nowa rodzine
+          </a>
+        </p>
       </form>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 
 import { Login } from './components/Login';
+import { Register } from './components/Register';
 import { BottomNav } from './components/BottomNav';
 import { ShoppingList } from './components/ShoppingList';
 import { ShoppingMode } from './components/ShoppingMode';
@@ -15,6 +16,7 @@ import './styles/main.css';
 function AppContent() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(hasAccessKey());
   const [householdName, setHouseholdName] = useState('');
   const [products, setProducts] = useState([]);
@@ -91,6 +93,9 @@ function AppContent() {
   };
 
   if (!isLoggedIn) {
+    if (location.pathname === '/register') {
+      return <Register onLogin={handleLogin} />;
+    }
     return <Login onLogin={handleLogin} />;
   }
 
