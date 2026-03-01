@@ -64,6 +64,7 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
             household_id=household.id,
             name=product_name,
             sort_order=idx,
+            is_new=False,
         )
         db.add(product)
 

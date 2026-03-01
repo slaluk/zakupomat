@@ -1,6 +1,6 @@
 # API Reference — Zakupomat
 
-Wszystkie endpointy (poza `/auth/login` i `/health`) wymagają nagłówka:
+Wszystkie endpointy (poza `/auth/login`, `/auth/register` i `/health`) wymagają nagłówka:
 ```
 X-Access-Key: <klucz_dostępu>
 ```
@@ -30,6 +30,31 @@ Weryfikuje klucz dostępu. Nie wymaga nagłówka `X-Access-Key`.
 ```json
 { "success": false, "household_name": null }
 ```
+
+---
+
+### POST /auth/register
+
+Tworzy nową rodzinę (household) z domyślną bazą produktów. Nie wymaga nagłówka `X-Access-Key`.
+
+**Request body:**
+```json
+{ "name": "Kowalsccy" }
+```
+
+**Response:**
+```json
+{ "access_key": "abc123def456", "household_name": "Kowalsccy" }
+```
+
+`access_key` jest zwracany w plaintext — frontend buduje z niego link udostępniający: `{origin}/?key={access_key}`.
+
+**Błędy:**
+- `400` — nazwa rodziny jest pusta
+
+**Uwagi:**
+- Automatycznie dodaje ~89 domyślnych produktów z `default_products.py` (z `is_new=False`)
+- Klucz jest 12-znakowy, losowy (lowercase + cyfry), na serwerze przechowywany jako SHA256
 
 ---
 
