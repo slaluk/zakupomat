@@ -59,15 +59,19 @@ export function Register({ onLogin }) {
   };
 
   const handleGoToApp = async () => {
-    try {
-      const loginResult = await login(result.access_key);
-      if (loginResult.success) {
-        onLogin(loginResult.household_name);
-        navigate('/');
+    if (onLogin) {
+      try {
+        const loginResult = await login(result.access_key);
+        if (loginResult.success) {
+          onLogin(loginResult.household_name);
+          navigate('/');
+        }
+      } catch {
+        // Fallback: navigate with key param
+        window.location.href = shareUrl;
       }
-    } catch {
-      // Fallback: navigate with key param
-      window.location.href = shareUrl;
+    } else {
+      navigate('/');
     }
   };
 
@@ -118,7 +122,7 @@ export function Register({ onLogin }) {
             onClick={handleGoToApp}
             style={{ marginTop: 16 }}
           >
-            Przejdz do aplikacji
+            {onLogin ? 'Przejdz do aplikacji' : 'Wroc do listy zakupow'}
           </button>
         </div>
       </div>
