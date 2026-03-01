@@ -154,6 +154,10 @@ function AppContent() {
               />
             }
           />
+          <Route
+            path="/register"
+            element={<Register />}
+          />
         </Routes>
       </div>
       <BottomNav products={products} />
